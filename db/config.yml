@@ -8,13 +8,13 @@ default: &default
 
 development:
   <<: *default
-  database: movies_development
+  database: mock_nequi_development
   username: postgres
   password: 1234
 
 test: &test
   <<: *default
-  database: movies_test
+  database: mock_nequi_test
   username: postgres
   password: 1234
 
