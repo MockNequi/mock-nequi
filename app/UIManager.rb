@@ -1,3 +1,5 @@
+require 'digest'
+
 class UIManager
 
   def show message
@@ -25,8 +27,11 @@ class UIManager
   end
 
   def getPassword
+
     puts "Ingrese contraseña"
     password = gets.chomp
+    Digest::SHA2.hexdigest  password
+    
   end
 
   def number_or_nil (string)

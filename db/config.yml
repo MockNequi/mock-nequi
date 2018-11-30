@@ -4,18 +4,18 @@ default: &default
   pool: 5
   host: localhost
   username: postgres
-  password: 1234
+  password: postgres
 
 development:
   <<: *default
   database: mock_nequi_development
   username: postgres
-  password: 1234
+  password: postgres
 
 test: &test
   <<: *default
   database: mock_nequi_test
   username: postgres
-  password: 1234
+  password: postgres
 
 production:
