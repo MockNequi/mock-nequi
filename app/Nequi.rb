@@ -1,12 +1,11 @@
 load 'DBManager.rb'
 load 'UIManager.rb'
 load 'SessionManager.rb'
-require_relative './models/user'
 
 class Nequi
   def initialize
-    @UI = UIManager.new()
-    @sessionManager = SessionManager.new()
+    @UI = UIManager.new
+    @sessionManager = SessionManager.new
     @continue = true
     @option = 0
     dbManager = DBManager.new
@@ -16,7 +15,7 @@ class Nequi
   def start
     # ciclo principal
     while @continue
-      @option = @UI.menuInitial
+      @option = @UI.initialMenu
       if @option == 1
         @sessionManager.signUp
       elsif @option == 2

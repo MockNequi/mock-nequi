@@ -1,8 +1,12 @@
 load 'UIManager.rb'
+load 'AccountManager.rb'
+require_relative './models/user'
+require_relative './models/account'
 
 class SessionManager
   def initialize
-    @UI = UIManager.new()
+    @UI = UIManager.new
+    @accoutManager = AccountManager.new
   end
 
   def signUp
@@ -10,13 +14,7 @@ class SessionManager
     email = @UI.getEmail
     password = @UI.getPassword
     # Validaciones donde putas?
-
-    user = User.new(name: name, email: email, password: password)
-    if user.save!
-      @UI.show "Usuario creado"
-    else
-      @UI.show "Error al crear usuario"
-    end
+    createUser(name, email, password)
   end
 
   def signIn
@@ -27,7 +25,7 @@ class SessionManager
       password = @UI.getPassword
       if user.password == password
         @UI.show "Bienvenido #{user.name}"
-        logIn
+        logIn user
       else
         @UI.show "contraseña incorrecta"
       end
@@ -36,8 +34,23 @@ class SessionManager
     end
   end
 
-  def logIn
-    puts "Reemplazar esto por menu de logeado"
+  def createUser (name, email, password)
+    user = User.new(name: name, email: email, password: password)
+    if user.save!
+      @UI.show "Usuario creado"
+      account = Account.new user: user
+      if account.save!
+        puts "cuenta creada"
+      else
+        puts "puta"
+      end
+    else
+      puts "Error al crear usuario"
+    end
+  end
+
+  def logIn user
+    @accoutManager.run user
   end
 
 end

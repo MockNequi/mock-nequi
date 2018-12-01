@@ -1,4 +1,4 @@
 load 'Nequi.rb'
 
-nequi = Nequi.new()
+nequi = Nequi.new
 nequi.start
