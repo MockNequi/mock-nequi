@@ -21,7 +21,7 @@ class AccountManager
       elsif @option == 4
         withdraw()
       elsif @option == 5
-        puts "Envio"
+        send()
       elsif @option == 6
         puts "Consulta"
       elsif @option == 7
@@ -67,6 +67,31 @@ class AccountManager
     else
       @UI.show "Saldo insuficiente"
     end
+  end
+
+  def send
+    requestSendData
+    if @user.account.balance_available >= @value
+      receivingUser = User.find_by email: @email
+      if receivingUser
+        receivingUser.account.balance_available += @value
+        @user.account.balance_available -= @value
+        if receivingUser.account.save! && @user.account.save!
+          puts "Le enviaste #{@value} a #{receivingUser.name}"
+        else
+          puts "Transacción anulada"
+        end
+      else
+        puts "No existe el usuario"
+      end
+    else
+      puts "Saldo insuficiente"
+    end
+  end
+
+  def requestSendData
+    @email = @UI.getEmail
+    @value = @UI.getSendValue
   end
 
 end

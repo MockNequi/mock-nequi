@@ -57,6 +57,11 @@ class UIManager
     number_or_nil (gets.chomp)
   end
 
+  def getSendValue
+    puts "Cuánto desea enviar?"
+    number_or_nil (gets.chomp)
+  end
+
   # Mensajes de error
   def errorMessageIncorrectInput
     puts "Entrada incorrecta"
