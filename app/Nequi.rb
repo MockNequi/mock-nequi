@@ -24,7 +24,7 @@ class Nequi
         @continue = false
         puts "Saliendo"
       else
-        puts "Pinchi pendejo"
+        @UI.errorMessageIncorrectInput
       end
     end
 

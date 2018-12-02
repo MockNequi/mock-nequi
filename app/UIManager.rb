@@ -42,6 +42,12 @@ class UIManager
     Digest::SHA2.hexdigest  password
   end
 
+  # Mensajes de error
+  def errorMessageIncorrectInput
+    puts "Entrada incorrecta"
+  end
+
+  # Validaciones
   def number_or_nil (string)
     Integer(string || '')
   rescue ArgumentError

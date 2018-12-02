@@ -20,18 +20,18 @@ class AccountManager
         @continue = false
         puts "Cerrando sesión"
       else
-        puts "Pinchi pendejo"
+        @UI.errorMessageIncorrectInput
       end
     end
 
   end
 
   def checkBalanceAvailable
-    puts "Saldo disponible: #{@user.account.balance_available}"
+    @UI.show "Saldo disponible: #{@user.account.balance_available}"
   end
 
   def checkTotalBalance
-    puts "Saldo total: #{@user.account.total_balance}"
+    @UI.show "Saldo total: #{@user.account.total_balance}"
   end
 
 end

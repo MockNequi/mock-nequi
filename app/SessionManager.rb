@@ -10,20 +10,17 @@ class SessionManager
   end
 
   def signUp
-    name = @UI.getName
-    email = @UI.getEmail
-    password = @UI.getPassword
+    requestRegistrationData
     # Validaciones donde putas?
-    createUser(name, email, password)
+    createUser
   end
 
   def signIn
-    email = @UI.getEmail
-    user = User.find_by email: email
+    requestLoginData
+    user = User.find_by email: @email
     # Validaciones donde putas? x2
     if user
-      password = @UI.getPassword
-      if user.password == password
+      if user.password == @password
         @UI.show "Bienvenido #{user.name}"
         logIn user
       else
@@ -34,19 +31,34 @@ class SessionManager
     end
   end
 
-  def createUser (name, email, password)
-    user = User.new(name: name, email: email, password: password)
-    if user.save!
+  def createUser
+    @user = User.new(name: @name, email: @email, password: @password)
+    if @user.save!
       @UI.show "Usuario creado"
-      account = Account.new user: user
-      if account.save!
-        puts "cuenta creada"
-      else
-        puts "puta"
-      end
+      createAccount
     else
-      puts "Error al crear usuario"
+      @UI.show "Error al crear usuario" #Mensaje especifico?
     end
+  end
+
+  def createAccount
+    account = Account.new user: @user
+    if account.save!
+      @UI.show "cuenta creada"
+    else
+      @UI.show "Error al crear cuenta" #Mensaje especifico?
+    end
+  end
+
+  def requestLoginData
+    @email = @UI.getEmail
+    @password = @UI.getPassword
+  end
+
+  def requestRegistrationData
+    @name = @UI.getName
+    @email = @UI.getEmail
+    @password = @UI.getPassword
   end
 
   def logIn user
