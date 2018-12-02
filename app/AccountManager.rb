@@ -17,6 +17,14 @@ class AccountManager
       elsif @option == 2
         checkTotalBalance()
       elsif @option == 3
+        recharge()
+      elsif @option == 4
+        withdraw()
+      elsif @option == 5
+        puts "Envio"
+      elsif @option == 6
+        puts "Consulta"
+      elsif @option == 7
         @continue = false
         puts "Cerrando sesión"
       else
@@ -31,7 +39,34 @@ class AccountManager
   end
 
   def checkTotalBalance
+    # Si debe existir este campo? o mejor que consulte los otros campos y los sume?
     @UI.show "Saldo total: #{@user.account.total_balance}"
+  end
+
+  def recharge
+    value = @UI.getRechargeValue
+    # validaciones?
+    @user.account.balance_available += value
+    if @user.account.save!
+      @UI.show "Nuevo saldo: #{@user.account.balance_available}"
+    else
+      @UI.show "Transacción anulada"
+    end
+  end
+
+  def withdraw
+    value = @UI.getWithdrawValue
+    if @user.account.balance_available >= value
+      @user.account.balance_available -= value
+      if @user.account.save!
+        @UI.show "Retiró #{value}"
+        @UI.show "Nuevo saldo: #{@user.account.balance_available}"
+      else
+        @UI.show "Transacción anulada"
+      end
+    else
+      @UI.show "Saldo insuficiente"
+    end
   end
 
 end
