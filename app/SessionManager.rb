@@ -43,9 +43,7 @@ class SessionManager
 
   def createAccount
     account = Account.new user: @user
-    if account.save!
-      @UI.show "cuenta creada"
-    else
+    unless account.save!
       @UI.show "Error al crear cuenta" #Mensaje especifico?
     end
   end

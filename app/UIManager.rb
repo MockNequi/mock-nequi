@@ -62,6 +62,25 @@ class UIManager
     number_or_nil (gets.chomp)
   end
 
+  def getNumTransactions
+    puts "Cuántas transacciones desea ver?"
+    number_or_nil (gets.chomp)
+  end
+
+  def display transaction
+    if transaction.transaction_type == "recarga"
+      puts "#{transaction.created_at.to_s[0..9]}: Recarga de $#{transaction.amount}"
+    elsif transaction.transaction_type == "retiro"
+      puts "#{transaction.created_at.to_s[0..9]}: Retiro de $#{transaction.amount}"
+    elsif transaction.transaction_type == "envio"
+      puts "#{transaction.created_at.to_s[0..9]}: Para #{transaction.user_name} $#{transaction.amount}"
+    elsif transaction.transaction_type == "recepcion"
+      puts "#{transaction.created_at.to_s[0..9]}: De #{transaction.user_name} $#{transaction.amount}"
+    else
+      puts "Error al mostrar transacciones"
+    end
+  end
+
   # Mensajes de error
   def errorMessageIncorrectInput
     puts "Entrada incorrecta"

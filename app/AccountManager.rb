@@ -1,14 +1,15 @@
 load 'UIManager.rb'
+require_relative './models/transaction'
 
 class AccountManager
   def initialize
     @UI = UIManager.new
-    @continue = true
     @option = 0
   end
 
   def run user
     @user = user
+    @continue = true
     # Ciclo secundario
     while @continue
       @option = @UI.sessionMenu
@@ -23,10 +24,10 @@ class AccountManager
       elsif @option == 5
         send()
       elsif @option == 6
-        puts "Consulta"
+        consult()
       elsif @option == 7
         @continue = false
-        puts "Cerrando sesión"
+        @UI.show "Cerrando sesión"
       else
         @UI.errorMessageIncorrectInput
       end
@@ -48,6 +49,10 @@ class AccountManager
     # validaciones?
     @user.account.balance_available += value
     if @user.account.save!
+      transaction = Transaction.new(account: @user.account, transaction_type: 'recarga', amount: value)
+      unless transaction.save!
+        @UI.show "Error al crear transacción"
+      end
       @UI.show "Nuevo saldo: #{@user.account.balance_available}"
     else
       @UI.show "Transacción anulada"
@@ -59,6 +64,10 @@ class AccountManager
     if @user.account.balance_available >= value
       @user.account.balance_available -= value
       if @user.account.save!
+        transaction = Transaction.new(account: @user.account, transaction_type: 'retiro', amount: value)
+        unless transaction.save!
+          @UI.show "Error al crear transacción"
+        end
         @UI.show "Retiró #{value}"
         @UI.show "Nuevo saldo: #{@user.account.balance_available}"
       else
@@ -77,15 +86,29 @@ class AccountManager
         receivingUser.account.balance_available += @value
         @user.account.balance_available -= @value
         if receivingUser.account.save! && @user.account.save!
-          puts "Le enviaste #{@value} a #{receivingUser.name}"
+          transaction = Transaction.new(account: @user.account, user_name: receivingUser.name, transaction_type: 'envio', amount: @value)
+          transaction2 = Transaction.new(account: receivingUser.account, user_name: @user.name, transaction_type: 'recepcion', amount: @value)
+          unless transaction.save! && transaction2.save!
+            @UI.show "Error al crear transacción"
+          end
+          @UI.show "Le enviaste #{@value} a #{receivingUser.name}"
         else
-          puts "Transacción anulada"
+          @UI.show "Transacción anulada"
         end
       else
-        puts "No existe el usuario"
+        @UI.show "No existe el usuario #{@email}"
       end
     else
-      puts "Saldo insuficiente"
+      @UI.show "Saldo insuficiente"
+    end
+  end
+
+  def consult
+    numTransactions = @UI.getNumTransactions
+    transactions = Transaction.select("transaction_type, amount, user_name, created_at").where(account_id: @user.account.id).last(numTransactions)
+    @UI.show "Transacciones"
+    transactions.each do |transaction|
+      @UI.display transaction
     end
   end
 
