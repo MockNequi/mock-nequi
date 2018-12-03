@@ -25,7 +25,19 @@ class UIManager
     puts "4. Retirar"
     puts "5. Enviar"
     puts "6. Consultar transacciones"
-    puts "7. Cerrar sesión"
+    puts "7. Colchón"
+    puts "8. Cerrar sesión"
+
+    number_or_nil (gets.chomp)
+  end
+
+  # Menu del colchón
+  def mattressMenu
+    puts "Digite un numero correspondiente a lo que quiere hacer"
+    puts "1. Consultar dinero en colchón"
+    puts "2. Agregar dinero"
+    puts "3. Sacar dinero del colchón"
+    puts "4. Regresar"
 
     number_or_nil (gets.chomp)
   end

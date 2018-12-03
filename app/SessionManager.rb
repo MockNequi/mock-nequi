@@ -43,8 +43,17 @@ class SessionManager
 
   def createAccount
     account = Account.new user: @user
-    unless account.save!
+    if account.save!
+      createMattress()
+    else
       @UI.show "Error al crear cuenta" #Mensaje especifico?
+    end
+  end
+
+  def createMattress
+    mattress = Mattress.new account: @user.account
+    unless mattress.save!
+      @UI.show "Error al crear colchón" #Mensaje especifico?
     end
   end
 
