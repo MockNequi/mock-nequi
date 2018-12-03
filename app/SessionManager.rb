@@ -35,7 +35,7 @@ class SessionManager
     @user = User.new(name: @name, email: @email, password: @password)
     if @user.save!
       @UI.show "Usuario creado"
-      createAccount
+      createAccount()
     else
       @UI.show "Error al crear usuario" #Mensaje especifico?
     end
@@ -48,13 +48,13 @@ class SessionManager
     end
   end
 
-  def requestLoginData
+  def requestRegistrationData
+    @name = @UI.getName
     @email = @UI.getEmail
     @password = @UI.getPassword
   end
 
-  def requestRegistrationData
-    @name = @UI.getName
+  def requestLoginData
     @email = @UI.getEmail
     @password = @UI.getPassword
   end
