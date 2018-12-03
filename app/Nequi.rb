@@ -22,9 +22,9 @@ class Nequi
         @sessionManager.signIn
       elsif @option == 3
         @continue = false
-        puts "Saliendo"
+        @UI.show "Saliendo"
       else
-        puts "Pinchi pendejo"
+        @UI.errorMessageIncorrectInput
       end
     end
 

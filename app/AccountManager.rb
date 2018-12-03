@@ -1,37 +1,38 @@
 load 'UIManager.rb'
+load 'AccountOperator.rb'
+require_relative './models/transaction'
 
 class AccountManager
   def initialize
     @UI = UIManager.new
-    @continue = true
     @option = 0
   end
 
   def run user
-    @user = user
+    @continue = true
+    accountOperator = AccountOperator.new user
     # Ciclo secundario
     while @continue
       @option = @UI.sessionMenu
       if @option == 1
-        checkBalanceAvailable()
+        accountOperator.checkBalanceAvailable()
       elsif @option == 2
-        checkTotalBalance()
+        accountOperator.checkTotalBalance()
       elsif @option == 3
+        accountOperator.recharge()
+      elsif @option == 4
+        accountOperator.withdraw()
+      elsif @option == 5
+        accountOperator.send()
+      elsif @option == 6
+        accountOperator.consult()
+      elsif @option == 7
         @continue = false
-        puts "Cerrando sesión"
+        @UI.show "Cerrando sesión"
       else
-        puts "Pinchi pendejo"
+        @UI.errorMessageIncorrectInput
       end
     end
 
   end
-
-  def checkBalanceAvailable
-    puts "Saldo disponible: #{@user.account.balance_available}"
-  end
-
-  def checkTotalBalance
-    puts "Saldo total: #{@user.account.total_balance}"
-  end
-
 end
