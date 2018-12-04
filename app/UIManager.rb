@@ -26,7 +26,8 @@ class UIManager
     puts "5. Enviar"
     puts "6. Consultar transacciones"
     puts "7. Colchón"
-    puts "8. Cerrar sesión"
+    puts "8. Bolsillos"
+    puts "9. Cerrar sesión"
 
     number_or_nil (gets.chomp)
   end
@@ -42,8 +43,22 @@ class UIManager
     number_or_nil (gets.chomp)
   end
 
+  # Menu del bolsillo
+  def pocketMenu
+    puts "Digite un numero correspondiente a lo que quiere hacer"
+    puts "1. Ver bolsillos"
+    puts "2. Crear bolsillo"
+    puts "3. Eliminar bolsillo"
+    puts "4. Agregar dinero a bolsillo"
+    puts "5. Retirar dinero de bolsillo"
+    puts "6. Enviar dinero desde bolsillo"
+    puts "7. Regresar"
+
+    number_or_nil (gets.chomp)
+  end
+
   def getName
-    puts "Ingrese su nombre"
+    puts "Ingrese nombre"
     name = gets.chomp
   end
 
@@ -76,6 +91,13 @@ class UIManager
 
   def getNumTransactions
     puts "Cuántas transacciones desea ver?"
+    number_or_nil (gets.chomp)
+  end
+
+  def getPocket pockets
+    for i in 1..pockets.length
+      puts "#{i}. #{pockets[i-1].name}: #{pockets[i-1].balance}"
+    end
     number_or_nil (gets.chomp)
   end
 
