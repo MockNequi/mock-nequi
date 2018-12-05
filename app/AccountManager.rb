@@ -2,15 +2,18 @@ load 'UIManager.rb'
 load 'AccountOperator.rb'
 load 'MattressManager.rb'
 load 'PocketManager.rb'
+load 'GoalManager.rb'
 require_relative './models/transaction'
 
 class AccountManager
   def initialize user
-    @UI = UIManager.new
     @option = 0
+    account = user.account
+    @UI = UIManager.new
     @accountOperator = AccountOperator.new user
     @mattressManager = MattressManager.new user
     @pocketManager = PocketManager.new user
+    @goalManager = GoalManager.new account
   end
 
   def run
@@ -35,6 +38,8 @@ class AccountManager
       elsif @option == 8
         @pocketManager.go()
       elsif @option == 9
+        @goalManager.go()
+      elsif @option == 10
         @continue = false
         @UI.show "Cerrando sesión"
       else
