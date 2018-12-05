@@ -1,36 +1,40 @@
 load 'UIManager.rb'
 load 'AccountOperator.rb'
 load 'MattressManager.rb'
+load 'PocketManager.rb'
 require_relative './models/transaction'
 
 class AccountManager
-  def initialize
+  def initialize user
     @UI = UIManager.new
     @option = 0
+    @accountOperator = AccountOperator.new user
+    @mattressManager = MattressManager.new user
+    @pocketManager = PocketManager.new user
   end
 
-  def run user
+  def run
     @continue = true
-    accountOperator = AccountOperator.new user
-    mattressManager = MattressManager.new user
     # Ciclo secundario
     while @continue
       @option = @UI.sessionMenu
       if @option == 1
-        accountOperator.checkBalanceAvailable()
+        @accountOperator.checkBalanceAvailable()
       elsif @option == 2
-        accountOperator.checkTotalBalance()
+        @accountOperator.checkTotalBalance()
       elsif @option == 3
-        accountOperator.recharge()
+        @accountOperator.recharge()
       elsif @option == 4
-        accountOperator.withdraw()
+        @accountOperator.withdraw()
       elsif @option == 5
-        accountOperator.send()
+        @accountOperator.send()
       elsif @option == 6
-        accountOperator.consult()
+        @accountOperator.consult()
       elsif @option == 7
-        mattressManager.go()
+        @mattressManager.go()
       elsif @option == 8
+        @pocketManager.go()
+      elsif @option == 9
         @continue = false
         @UI.show "Cerrando sesión"
       else

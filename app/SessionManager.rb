@@ -6,7 +6,6 @@ require_relative './models/account'
 class SessionManager
   def initialize
     @UI = UIManager.new
-    @accoutManager = AccountManager.new
   end
 
   def signUp
@@ -17,7 +16,7 @@ class SessionManager
 
   def signIn
     requestLoginData
-    user = User.find_by email: @email
+    user = User.find_by_email @email
     # Validaciones donde putas? x2
     if user
       if user.password == @password
@@ -69,7 +68,8 @@ class SessionManager
   end
 
   def logIn user
-    @accoutManager.run user
+    @accoutManager = AccountManager.new user
+    @accoutManager.run
   end
 
 end
