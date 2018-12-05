@@ -27,7 +27,8 @@ class UIManager
     puts "6. Consultar transacciones"
     puts "7. Colchón"
     puts "8. Bolsillos"
-    puts "9. Cerrar sesión"
+    puts "9. Metas"
+    puts "10. Cerrar sesión"
 
     number_or_nil (gets.chomp)
   end
@@ -43,7 +44,7 @@ class UIManager
     number_or_nil (gets.chomp)
   end
 
-  # Menu del bolsillo
+  # Menu de los bolsillos
   def pocketMenu
     puts "Digite un numero correspondiente a lo que quiere hacer"
     puts "1. Ver bolsillos"
@@ -53,6 +54,18 @@ class UIManager
     puts "5. Retirar dinero de bolsillo"
     puts "6. Enviar dinero desde bolsillo"
     puts "7. Regresar"
+
+    number_or_nil (gets.chomp)
+  end
+
+  # Menu de las metas
+  def accountMenu
+    puts "Digite un numero correspondiente a lo que quiere hacer"
+    puts "1. Ver metas"
+    puts "2. Crear meta"
+    puts "3. Cerrar meta"
+    puts "4. Agregar dinero"
+    puts "5. Regresar"
 
     number_or_nil (gets.chomp)
   end
@@ -94,9 +107,26 @@ class UIManager
     number_or_nil (gets.chomp)
   end
 
+  def getTotalAmount
+    puts "Ingrese cantidad a ahorrar"
+    gets.chomp
+  end
+
+  def getEndDate
+    puts "Ingrese fecha de meta en formato AAAA-MM-DD"
+    gets.chomp
+  end
+
   def getPocket pockets
-    for i in 1..pockets.length
-      puts "#{i}. #{pockets[i-1].name}: #{pockets[i-1].balance}"
+    for i in 0...pockets.length
+      puts "#{i+1}. #{pockets[i].name}: #{pockets[i].balance}"
+    end
+    number_or_nil (gets.chomp)
+  end
+
+  def getGoal goals
+    for i in 0...goals.length
+      puts "#{i+1}. #{goals[i].name}. Fecha limite: #{goals[i].end_date} | Objetivo: #{goals[i].total_amount}"
     end
     number_or_nil (gets.chomp)
   end
@@ -112,6 +142,18 @@ class UIManager
       puts "#{transaction.created_at.to_s[0..9]}: De #{transaction.user_name} $#{transaction.amount}"
     else
       puts "Error al mostrar transacciones"
+    end
+  end
+
+  def showGoals goals
+    puts "Metas"
+    goals.each do |goal|
+      puts "Nombre: #{goal.name}"
+      puts "Monto total: #{goal.total_amount}"
+      puts "Dinero ahorrado: #{goal.saved_money}"
+      puts "Dinero faltante para cumplir meta: #{goal.total_amount - goal.saved_money}"
+      puts "Estado actual: #{goal.state}"
+      puts "Fecha limite: #{goal.end_date}"
     end
   end
 
