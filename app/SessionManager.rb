@@ -1,3 +1,4 @@
+require 'digest'
 load 'UIManager.rb'
 load 'AccountManager.rb'
 require_relative './models/user'
@@ -10,14 +11,13 @@ class SessionManager
 
   def signUp
     requestRegistrationData
-    # Validaciones donde putas?
     createUser
   end
 
   def signIn
     requestLoginData
+    convertPassword
     user = User.find_by_email @email
-    # Validaciones donde putas? x2
     if user
       if user.password == @password
         @UI.show "Bienvenido #{user.name}"
@@ -31,12 +31,15 @@ class SessionManager
   end
 
   def createUser
-    @user = User.new(name: @name, email: @email, password: @password)
-    if @user.save!
-      @UI.show "Usuario creado"
+    begin
+      validatePassword()
+      convertPassword()
+      @user = User.new(name: @name, email: @email, password: @password)
+      @user.save!
       createAccount()
-    else
-      @UI.show "Error al crear usuario" #Mensaje especifico?
+      @UI.show "Usuario creado"
+    rescue StandardError => e
+      @UI.show "Error al crear usuario: #{e.message}"
     end
   end
 
@@ -45,14 +48,14 @@ class SessionManager
     if account.save!
       createMattress()
     else
-      @UI.show "Error al crear cuenta" #Mensaje especifico?
+      @UI.show "Error al crear cuenta"
     end
   end
 
   def createMattress
     mattress = Mattress.new account: @user.account
     unless mattress.save!
-      @UI.show "Error al crear colchón" #Mensaje especifico?
+      @UI.show "Error al crear colchón"
     end
   end
 
@@ -70,6 +73,16 @@ class SessionManager
   def logIn user
     @accoutManager = AccountManager.new user
     @accoutManager.run
+  end
+
+  def validatePassword
+    if @password.length < 4
+      raise "La longitud mínima de la contraseña es de 4 caracteres"
+    end
+  end
+
+  def convertPassword
+    @password = Digest::SHA2.hexdigest @password
   end
 
 end
