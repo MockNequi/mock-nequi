@@ -1,5 +1,3 @@
-require 'digest'
-
 class UIManager
 
   def show message
@@ -83,8 +81,6 @@ class UIManager
   def getPassword
     puts "Ingrese contraseña"
     password = gets.chomp
-    # El metodo de encriptacion no debe ir aca
-    Digest::SHA2.hexdigest  password
   end
 
   def getRechargeValue
