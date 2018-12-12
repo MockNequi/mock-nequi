@@ -10,9 +10,9 @@ class AccountManager
     @option = 0
     account = user.account
     @UI = UIManager.new
-    @accountOperator = AccountOperator.new user
-    @mattressManager = MattressManager.new user
-    @pocketManager = PocketManager.new user
+    @accountOperator = AccountOperator.new account
+    @mattressManager = MattressManager.new account
+    @pocketManager = PocketManager.new account
     @goalManager = GoalManager.new account
   end
 
@@ -42,6 +42,7 @@ class AccountManager
       elsif @option == 10
         @continue = false
         @UI.show "Cerrando sesión"
+        @UI.cleanScreen
       else
         @UI.errorMessageIncorrectInput
       end

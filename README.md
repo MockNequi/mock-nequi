@@ -23,18 +23,21 @@ Con el siguiente comando:
 bundle
 ```
 
-#### Paso 4: Cree la base de datos
+#### Paso 4: Configurar credenciales de la base de datos
+Ingrese a la carpeta db y en el archivo config.yml ingrese el username y password de postgres.
+
+#### Paso 5: Cree la base de datos
 El siguiente paso es crear la base de datos
 ```
 bundle exec rake db:create
 ```
 
-#### Paso 5: Ejecute las migraciones
+#### Paso 6: Ejecute las migraciones
 ```
 bundle exec rake db:migrate
 ```
 
-#### Paso 6: Correr programa
+#### Paso 7: Correr programa
 Para iniciar el programa ejecute el siguiente comando:
 ```
 ruby app/Main.rb

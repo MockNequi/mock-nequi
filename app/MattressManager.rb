@@ -2,13 +2,15 @@ load 'UIManager.rb'
 require_relative './models/mattress'
 
 class MattressManager
-  def initialize user
+  def initialize account
     @UI = UIManager.new
-    @user = user
+    @account = account
+    @mattress = @account.mattress
   end
 
   def go
     @continue = true
+    @UI.cleanScreen
     while @continue
       @option = @UI.mattressMenu
       if @option == 1
@@ -19,6 +21,7 @@ class MattressManager
         withdraw()
       elsif @option == 4
         @continue = false
+        @UI.cleanScreen
       else
         @UI.errorMessageIncorrectInput
       end
@@ -26,13 +29,15 @@ class MattressManager
   end
 
   def checkBalance
-    @UI.show "Dinero en colchón: #{@user.account.mattress.balance}"
+    @UI.cleanScreen
+    @UI.show "Dinero en colchón: #{@mattress.balance}"
   end
 
   def recharge
+    @UI.cleanScreen
     @value = @UI.getRechargeValue
     # validaciones?
-    if @user.account.balance_available >= @value
+    if @account.balance_available >= @value
       moveMoneyTo('mattress')
     else
       @UI.show "Saldo insuficiente"
@@ -40,26 +45,27 @@ class MattressManager
   end
 
   def withdraw
+    @UI.cleanScreen
     @value = @UI.getWithdrawValue
-    # validaciones?
-    if @user.account.mattress.balance >= @value
+    if @mattress.balance >= @value
       moveMoneyTo('account')
     else
       @UI.show "Saldo en colchón insuficiente"
     end
   end
 
+  private
   def moveMoneyTo destination
     if destination == 'mattress'
-      @user.account.balance_available -= @value
-      @user.account.mattress.balance += @value
+      @account.balance_available -= @value
+      @mattress.balance += @value
     elsif destination == 'account'
-      @user.account.balance_available += @value
-      @user.account.mattress.balance -= @value
+      @account.balance_available += @value
+      @mattress.balance -= @value
     end
-    if @user.account.save! && @user.account.mattress.save!
-      @UI.show "Saldo disponible en cuenta: #{@user.account.balance_available}"
-      @UI.show "Dinero en colchón: #{@user.account.mattress.balance}"
+    if @account.save! && @mattress.save!
+      @UI.show "Saldo disponible en cuenta: #{@account.balance_available}"
+      @UI.show "Dinero en colchón: #{@mattress.balance}"
     else
       @UI.show "Transacción anulada"
     end

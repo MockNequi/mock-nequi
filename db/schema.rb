@@ -16,7 +16,6 @@ ActiveRecord::Schema.define(version: 2018_12_05_015843) do
   enable_extension "plpgsql"
 
   create_table "accounts", force: :cascade do |t|
-    t.integer "total_balance", null: false
     t.integer "balance_available", null: false
     t.bigint "user_id"
     t.datetime "created_at", null: false

@@ -18,6 +18,7 @@ class SessionManager
     requestLoginData
     convertPassword
     user = User.find_by_email @email
+    @UI.cleanScreen
     if user
       if user.password == @password
         @UI.show "Bienvenido #{user.name}"
@@ -31,6 +32,7 @@ class SessionManager
   end
 
   def createUser
+    @UI.cleanScreen
     begin
       validatePassword()
       convertPassword()
@@ -43,6 +45,7 @@ class SessionManager
     end
   end
 
+  private
   def createAccount
     account = Account.new user: @user
     if account.save!
