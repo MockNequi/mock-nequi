@@ -14,6 +14,7 @@ class Nequi
 
   def start
     # ciclo principal
+    @UI.cleanScreen
     while @continue
       @option = @UI.initialMenu
       if @option == 1
@@ -22,6 +23,7 @@ class Nequi
         @sessionManager.signIn
       elsif @option == 3
         @continue = false
+        @UI.cleanScreen
         @UI.show "Saliendo"
       else
         @UI.errorMessageIncorrectInput

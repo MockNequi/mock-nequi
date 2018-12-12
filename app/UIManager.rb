@@ -1,3 +1,5 @@
+require 'io/console'
+
 class UIManager
 
   def show message
@@ -68,6 +70,10 @@ class UIManager
     number_or_nil (gets.chomp)
   end
 
+  def cleanScreen
+    system('cls')
+  end
+
   def getName
     puts "Ingrese nombre"
     name = gets.chomp
@@ -80,7 +86,7 @@ class UIManager
 
   def getPassword
     puts "Ingrese contraseña"
-    password = gets.chomp
+    password = STDIN.getpass
   end
 
   def getRechargeValue
@@ -141,8 +147,19 @@ class UIManager
     end
   end
 
+  def showPockets pockets
+    puts "Bolsillos"
+    puts "------"
+    pockets.each do |pocket|
+      puts "Nombre: #{pocket.name}"
+      puts "Saldo: #{pocket.balance}"
+      puts "------"
+    end
+  end
+
   def showGoals goals
     puts "Metas"
+    puts "------"
     goals.each do |goal|
       puts "Nombre: #{goal.name}"
       puts "Monto total: #{goal.total_amount}"
@@ -150,14 +167,17 @@ class UIManager
       puts "Dinero faltante para cumplir meta: #{goal.total_amount - goal.saved_money}"
       puts "Estado actual: #{goal.state}"
       puts "Fecha limite: #{goal.end_date}"
+      puts "------"
     end
   end
 
   # Mensajes de error
   def errorMessageIncorrectInput
+    @UI.cleanScreen
     puts "Entrada incorrecta"
   end
 
+  private
   # Validaciones
   def number_or_nil (string)
     Integer(string || '')

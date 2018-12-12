@@ -9,6 +9,7 @@ class GoalManager
 
   def go
     @continue = true
+    @UI.cleanScreen
     while @continue
       @option = @UI.accountMenu
       if @option == 1
@@ -21,6 +22,7 @@ class GoalManager
         addMoney()
       elsif @option == 5
         @continue = false
+        @UI.cleanScreen
       else
         @UI.errorMessageIncorrectInput
       end
@@ -28,6 +30,7 @@ class GoalManager
   end
 
   def checkGoals
+    @UI.cleanScreen
     goals = Goal.where(account_id: @account.id)
     @UI.showGoals goals
   end
@@ -36,9 +39,11 @@ class GoalManager
     requestGoalData
     goal = Goal.new(name: @name, total_amount: @totalAmount, end_date: @endDate, account_id: @account.id)
     goal.save!
+    @UI.show "Meta creada"
   end
 
   def closeGoal
+    @UI.cleanScreen
     goals = Goal.where(account_id: @account.id)
     @UI.show "Digite el número correspondiente a la meta que desea cerrar"
     number = @UI.getGoal goals
@@ -51,12 +56,12 @@ class GoalManager
   end
 
   def addMoney
+    @UI.cleanScreen
     goals = Goal.where(account_id: @account.id, state: "abierta")
     @UI.show "Digite el número correspondiente a la meta a la que desea agregar dinero"
     number = @UI.getGoal goals
     goal = goals[number-1]
     @value = @UI.getRechargeValue
-    # validaciones?
     if @account.balance_available >= @value
       @account.balance_available -= @value
       goal.saved_money += @value
@@ -70,8 +75,10 @@ class GoalManager
       @UI.show "Saldo insuficiente"
     end
   end
-
+  
+  private
   def requestGoalData
+    @UI.cleanScreen
     @name = @UI.getName
     @totalAmount = @UI.getTotalAmount
     @endDate = @UI.getEndDate

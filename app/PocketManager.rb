@@ -2,13 +2,14 @@ load 'UIManager.rb'
 require_relative './models/pocket'
 
 class PocketManager
-  def initialize user
+  def initialize account
     @UI = UIManager.new
-    @user = user
+    @account = account
   end
 
   def go
     @continue = true
+    @UI.cleanScreen
     while @continue
       @option = @UI.pocketMenu
       if @option == 1
@@ -25,6 +26,7 @@ class PocketManager
         sendMoney()
       elsif @option == 7
         @continue = false
+        @UI.cleanScreen
       else
         @UI.errorMessageIncorrectInput
       end
@@ -32,17 +34,15 @@ class PocketManager
   end
 
   def checkPockets
-    pockets = Pocket.where(account_id: @user.account.id)
-    @UI.show "Bolsillos"
-    pockets.each do |pocket|
-      @UI.show "Nombre: #{pocket.name}"
-      @UI.show "Saldo: #{pocket.balance}"
-    end
+    @UI.cleanScreen
+    pockets = Pocket.where(account_id: @account.id)
+    @UI.showPockets pockets
   end
 
   def createPocket
+    @UI.cleanScreen
     name = @UI.getName
-    pocket = Pocket.new(account: @user.account, name: name)
+    pocket = Pocket.new(account: @account, name: name)
     if pocket.save!
       @UI.show "Bolsillo creado"
     else
@@ -51,28 +51,30 @@ class PocketManager
   end
 
   def deletePocket
-    pockets = Pocket.where(account_id: @user.account.id)
+    @UI.cleanScreen
+    pockets = Pocket.where(account_id: @account.id)
     @UI.show "Digite el número correspondiente al bolsillo que desea eliminar"
     for i in 1..pockets.length
       @UI.show "#{i}. #{pockets[i-1].name}: #{pockets[i-1].balance}"
     end
     input = gets.chomp.to_i
     pocket = pockets[input-1]
-    @user.account.balance_available += pocket.balance
+    @account.balance_available += pocket.balance
     pocket.destroy
-    @user.account.save!
+    @account.save!
     @UI.show "#{pocket.name} eliminado"
-    @UI.show "Saldo disponible en cuenta: #{@user.account.balance_available}"
+    @UI.show "Saldo disponible en cuenta: #{@account.balance_available}"
   end
 
   def recharge
-    pockets = Pocket.where(account_id: @user.account.id)
+    @UI.cleanScreen
+    pockets = Pocket.where(account_id: @account.id)
     @UI.show "Digite el número correspondiente al bolsillo que desea recargar"
     number = @UI.getPocket pockets
     @pocket = pockets[number-1]
     @value = @UI.getRechargeValue
     # validaciones?
-    if @user.account.balance_available >= @value
+    if @account.balance_available >= @value
       moveMoneyTo('pocket')
     else
       @UI.show "Saldo insuficiente"
@@ -80,7 +82,8 @@ class PocketManager
   end
 
   def withdraw
-    pockets = Pocket.where(account_id: @user.account.id)
+    @UI.cleanScreen
+    pockets = Pocket.where(account_id: @account.id)
     @UI.show "Digite el número correspondiente al bolsillo del que desea retirar"
     number = @UI.getPocket pockets
     @pocket = pockets[number-1]
@@ -93,24 +96,9 @@ class PocketManager
     end
   end
 
-  def moveMoneyTo destination
-    if destination == 'pocket'
-      @user.account.balance_available -= @value
-      @pocket.balance += @value
-    elsif destination == 'account'
-      @user.account.balance_available += @value
-      @pocket.balance -= @value
-    end
-    if @user.account.save! && @pocket.save!
-      @UI.show "Saldo disponible en cuenta: #{@user.account.balance_available}"
-      @UI.show "Dinero en bolsillo: #{@pocket.balance}"
-    else
-      @UI.show "Transacción anulada"
-    end
-  end
-
   def sendMoney
-    pockets = Pocket.where(account_id: @user.account.id)
+    @UI.cleanScreen
+    pockets = Pocket.where(account_id: @account.id)
     @UI.show "Digite el número correspondiente al bolsillo del que desea enviar dinero"
     number = @UI.getPocket pockets
     @pocket = pockets[number-1]
@@ -127,6 +115,23 @@ class PocketManager
     end
   end
 
+  private
+  def moveMoneyTo destination
+    if destination == 'pocket'
+      @account.balance_available -= @value
+      @pocket.balance += @value
+    elsif destination == 'account'
+      @account.balance_available += @value
+      @pocket.balance -= @value
+    end
+    if @account.save! && @pocket.save!
+      @UI.show "Saldo disponible en cuenta: #{@account.balance_available}"
+      @UI.show "Dinero en bolsillo: #{@pocket.balance}"
+    else
+      @UI.show "Transacción anulada"
+    end
+  end
+
   def requestSendData
     @email = @UI.getEmail
     @value = @UI.getSendValue
@@ -137,8 +142,8 @@ class PocketManager
     @pocket.balance -= @value
     if user.account.save! && @pocket.save!
       accountOperator = AccountOperator.new @user
-      accountOperator.createTransaction(@user.account, 'envio', @value, user.name)
-      accountOperator.createTransaction(user.account, 'recepcion', @value, @user.name)
+      accountOperator.createTransaction(@account, 'envio', @value, user.name)
+      accountOperator.createTransaction(user.account, 'recepcion', @value, @account.user.name)
       @UI.show "Le enviaste #{@value} a #{user.name}"
     else
       @UI.show "Transacción anulada"
